@@ -1,0 +1,7 @@
+{
+  "name": "fabricjs-demo",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}

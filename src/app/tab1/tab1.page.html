@@ -1,0 +1,42 @@
+<ion-header [translucent]="true">
+    <ion-toolbar>
+        <ion-title>
+            Tab 1
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+
+    <div class="content-wrapper">
+        <div>
+            <ion-list>
+                <ion-item>
+                    <!-- <ion-label>Action Sheet</ion-label> -->
+                    <ion-select [interfaceOptions]="customActionSheetOptions" [(ngModel)]="drawThis" interface="action-sheet" (ionChange)="draw(drawThis)" placeholder="Add shape">
+                        <ion-select-option value="square">Square</ion-select-option>
+                        <ion-select-option value="rectangle">Rectangle</ion-select-option>
+                        <ion-select-option value="triangle">Triangle</ion-select-option>
+                        <ion-select-option value="circle">Circle</ion-select-option>
+                        <!-- <ion-select-option value="line">Line</ion-select-option> -->
+                    </ion-select>
+                </ion-item>
+            </ion-list>
+        </div>
+        <div class="canvas-wrapper">
+            <canvas id="imageCanvas" class="canvas-style"></canvas>
+        </div>
+        <ion-fab (click)="deleteObject()" *ngIf="selected" mode="ios" size="small" vertical="end" horizontal="end">
+            <ion-fab-button>
+                <ion-icon name="trash-outline"></ion-icon>
+            </ion-fab-button>
+        </ion-fab>
+    </div>
+    <!-- <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Tab 1</ion-title>
+    </ion-toolbar>
+  </ion-header> -->
+
+    <!-- <app-explore-container name="Tab 1 page"></app-explore-container> -->
+</ion-content>
