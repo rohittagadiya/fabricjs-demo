@@ -64,7 +64,52 @@ export class Tab1Page implements OnInit {
       },
       'object:moving': (e) => {
         let that = this;
+        var obj = e.target;
 
+        /* var hSnapZone = 15;
+        var hObjectMiddle = e.target.left + (obj.width * obj.scaleX) / 2;
+        if (hObjectMiddle > obj.canvas.width / 2 - hSnapZone &&
+          hObjectMiddle < obj.canvas.width / 2 + hSnapZone) {
+          e.target.set({
+            left: obj.canvas.width / 2 - (obj.width * obj.scaleX) / 2,
+          }).setCoords();
+        }
+        var vSnapZone = 15;
+        var vObjectMiddle = e.target.top + (obj.height * obj.scaleY) / 2;
+        if (vObjectMiddle > obj.canvas.height / 2 - vSnapZone &&
+          vObjectMiddle < obj.canvas.height / 2 + vSnapZone) {
+          e.target.set({
+            top: obj.canvas.height / 2 - (obj.height * obj.scaleY) / 2,
+          }).setCoords();
+        } */
+
+        // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
+        if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
+          this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 10);
+        }
+        if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
+          this.canvas.setWidth(obj.left + (obj.width * obj.scaleX) + 10);
+        }
+
+        if (obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width) {
+          return;
+        }
+        obj.setCoords();
+
+        if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
+          obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
+          obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left);
+        }
+      },
+      'object:scaling': (e) => {
+        var obj = e.target;
+        // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
+        if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
+          this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 20);
+        }
+        if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
+          this.canvas.setWidth(obj.left + (obj.width * obj.scaleX) + 20);
+        }
       }
     });
     this.draw('square');
