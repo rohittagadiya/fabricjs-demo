@@ -45,13 +45,13 @@ export class Tab1Page implements OnInit {
       height: this.deviceHeight - 280,
       _height: this.deviceHeight - 280,
       // hoverCursor: 'pointer',
-      selection: true,
+      selection: false,
       selectionBorderColor: '#00c3f9',
       selectionColor: 'rgba(0, 195, 249, 0.2)',
       preserveObjectStacking: true,
       originX: 'center',
       originY: 'center',
-      fireRightClick: true,
+      // fireRightClick: true,
     });
     alignededGuides.initAligningGuidelines(this.canvas);
     this.canvas.on({
@@ -65,6 +65,43 @@ export class Tab1Page implements OnInit {
       'object:moving': (e) => {
         let that = this;
         var obj = e.target;
+
+        var edgedetection = 10;
+        obj.setCoords(); //Sets corner position coordinates based on current angle, width and height
+        that.canvas.forEachObject(function (targ) {
+          let activeObject = that.canvas.getActiveObject();
+          let activeObject_currentWidth = activeObject.width * activeObject.scaleX;
+          let activeObject_currentHeight = activeObject.height * activeObject.scaleY;
+          let target_currentWidth = targ.width * targ.scaleX;
+          let target_currentHeight = targ.height * targ.scaleY;
+
+          if (targ === activeObject) return;
+
+
+          if (Math.abs(activeObject.oCoords.tr.x - targ.oCoords.tl.x) < edgedetection) {
+            activeObject.left = targ.left - activeObject_currentWidth;
+          }
+          if (Math.abs(activeObject.oCoords.tl.x - targ.oCoords.tr.x) < edgedetection) {
+            activeObject.left = targ.left + target_currentWidth;
+          }
+          if (Math.abs(activeObject.oCoords.br.y - targ.oCoords.tr.y) < edgedetection) {
+            activeObject.top = targ.top - activeObject_currentHeight;
+          }
+          if (Math.abs(targ.oCoords.br.y - activeObject.oCoords.tr.y) < edgedetection) {
+            activeObject.top = targ.top + target_currentHeight;
+          }
+          if (activeObject.intersectsWithObject(targ) && targ.intersectsWithObject(activeObject)) {
+            targ.strokeWidth = 10;
+            targ.stroke = 'red';
+          } else {
+            targ.strokeWidth = 0;
+            targ.stroke = false;
+          }
+          if (!activeObject.intersectsWithObject(targ)) {
+            activeObject.strokeWidth = 0;
+            activeObject.stroke = false;
+          }
+        });
 
         /* var hSnapZone = 15;
         var hObjectMiddle = e.target.left + (obj.width * obj.scaleX) / 2;
