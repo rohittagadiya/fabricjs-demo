@@ -45,7 +45,7 @@ export class Tab1Page implements OnInit {
       height: this.deviceHeight - 280,
       _height: this.deviceHeight - 280,
       // hoverCursor: 'pointer',
-      selection: false,
+      selection: true,
       selectionBorderColor: '#00c3f9',
       selectionColor: 'rgba(0, 195, 249, 0.2)',
       preserveObjectStacking: true,
@@ -90,17 +90,17 @@ export class Tab1Page implements OnInit {
           if (Math.abs(targ.oCoords.br.y - activeObject.oCoords.tr.y) < edgedetection) {
             activeObject.top = targ.top + target_currentHeight;
           }
-          if (activeObject.intersectsWithObject(targ) && targ.intersectsWithObject(activeObject)) {
-            targ.strokeWidth = 10;
-            targ.stroke = 'red';
-          } else {
-            targ.strokeWidth = 0;
-            targ.stroke = false;
-          }
-          if (!activeObject.intersectsWithObject(targ)) {
-            activeObject.strokeWidth = 0;
-            activeObject.stroke = false;
-          }
+          // if (activeObject.intersectsWithObject(targ) && targ.intersectsWithObject(activeObject)) {
+          //   targ.strokeWidth = 10;
+          //   targ.stroke = 'red';
+          // } else {
+          //   targ.strokeWidth = 0;
+          //   targ.stroke = false;
+          // }
+          // if (!activeObject.intersectsWithObject(targ)) {
+          //   activeObject.strokeWidth = 0;
+          //   activeObject.stroke = false;
+          // }
         });
 
         /* var hSnapZone = 15;
@@ -121,7 +121,7 @@ export class Tab1Page implements OnInit {
         } */
 
         // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
-        if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
+        /* if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
           this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 10);
         }
         if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
@@ -136,17 +136,17 @@ export class Tab1Page implements OnInit {
         if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
           obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
           obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left);
-        }
+        } */
       },
       'object:scaling': (e) => {
         var obj = e.target;
         // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
-        if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
+        /* if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
           this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 20);
         }
         if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
           this.canvas.setWidth(obj.left + (obj.width * obj.scaleX) + 20);
-        }
+        } */
       }
     });
     this.draw('square');

@@ -7,7 +7,7 @@ export function initAligningGuidelines(canvas) {
 
     var ctx = canvas.getSelectionContext(),
         aligningLineOffset = 5,
-        aligningLineMargin = 5,
+        aligningLineMargin = 10,
         aligningLineWidth = 2,
         aligningLineColor = '#6aacff',
         viewportTransform,
