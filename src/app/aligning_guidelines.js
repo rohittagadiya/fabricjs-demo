@@ -216,18 +216,6 @@ export function initAligningGuidelines(canvas) {
                 activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 + activeObjectWidth / 2, activeObjectTop), 'center', 'center');
             }
 
-            //  snap source by the right edge
-            if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft + activeObjectWidth / 2)) {
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft + objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 - activeObjectWidth / 2, activeObjectTop), 'center', 'center');
-            }
-
-
 
             // snap by the vertical center line
             if (isInRange(objectTop, activeObjectTop)) {
@@ -261,16 +249,9 @@ export function initAligningGuidelines(canvas) {
                 activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 + activeObjectHeight / 2), 'center', 'center');
             }
 
+
             // snap by the bottom edge
-            if (isInRange(objectTop + objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop + objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
-            }
+
 
             if (isInRange(activeObjectLeft + activeObjectWidth / 2, objectLeft - objectWidth / 2)) {
                 verticalInTheRange = true;
@@ -282,16 +263,15 @@ export function initAligningGuidelines(canvas) {
                 activeObject.setPositionByOrigin(new fabric.Point(objectLeft - objectWidth / 2 - activeObjectWidth / 2, activeObjectTop), 'center', 'center');
             }
 
-            /* if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft - activeObjectWidth / 2)) {
-                console.log("10");
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft + objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
+            if (isInRange(objectTop + objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
+                horizontalInTheRange = true;
+                horizontalLines.push({
+                    y: objectTop + objectHeight / 2,
+                    x1: 0,
+                    x2: canvasWidth
                 });
-                activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 + activeObjectWidth / 2, activeObjectTop), 'center', 'center');
-            } */
+                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
+            }
 
             if (isInRange(objectTop - objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
                 horizontalInTheRange = true;
@@ -301,6 +281,17 @@ export function initAligningGuidelines(canvas) {
                     x2: canvasWidth
                 });
                 activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
+            }
+
+            //  snap source by the right edge
+            if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft + activeObjectWidth / 2)) {
+                verticalInTheRange = true;
+                verticalLines.push({
+                    x: objectLeft + objectWidth / 2,
+                    y1: 0,
+                    y2: canvasHeight
+                });
+                activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 - activeObjectWidth / 2, activeObjectTop), 'center', 'center');
             }
         }
 
