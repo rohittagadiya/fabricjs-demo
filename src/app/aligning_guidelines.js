@@ -282,7 +282,8 @@ export function initAligningGuidelines(canvas) {
                 activeObject.setPositionByOrigin(new fabric.Point(objectLeft - objectWidth / 2 - activeObjectWidth / 2, activeObjectTop), 'center', 'center');
             }
 
-            if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft - activeObjectWidth / 2)) {
+            /* if (isInRange(objectLeft + objectWidth / 2, activeObjectLeft - activeObjectWidth / 2)) {
+                console.log("10");
                 verticalInTheRange = true;
                 verticalLines.push({
                     x: objectLeft + objectWidth / 2,
@@ -290,7 +291,7 @@ export function initAligningGuidelines(canvas) {
                     y2: canvasHeight
                 });
                 activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 + activeObjectWidth / 2, activeObjectTop), 'center', 'center');
-            }
+            } */
 
             if (isInRange(objectTop - objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
                 horizontalInTheRange = true;
