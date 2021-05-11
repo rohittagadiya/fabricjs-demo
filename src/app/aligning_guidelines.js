@@ -185,6 +185,26 @@ export function initAligningGuidelines(canvas) {
                 objectHeight = objectBoundingRect.height / viewportTransform[3],
                 objectWidth = objectBoundingRect.width / viewportTransform[0];
 
+            if (isInRange(objectTop + objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
+                horizontalInTheRange = true;
+                horizontalLines.push({
+                    y: objectTop + objectHeight / 2,
+                    x1: 0,
+                    x2: canvasWidth
+                });
+                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 + activeObjectHeight / 2), 'center', 'center');
+            }
+
+            if (isInRange(objectTop - objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
+                horizontalInTheRange = true;
+                horizontalLines.push({
+                    y: objectTop - objectHeight / 2,
+                    x1: 0,
+                    x2: canvasWidth
+                });
+                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
+            }
+
             // snap by the horizontal center line
             if (isInRange(objectLeft, activeObjectLeft)) {
                 verticalInTheRange = true;
@@ -217,37 +237,8 @@ export function initAligningGuidelines(canvas) {
             }
 
 
-            // snap by the vertical center line
-            if (isInRange(objectTop, activeObjectTop)) {
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop), 'center', 'center');
-            }
 
-            // snap by the top edge
-            if (isInRange(objectTop - objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop - objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 + activeObjectHeight / 2), 'center', 'center');
-            }
 
-            if (isInRange(objectTop + objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop + objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 + activeObjectHeight / 2), 'center', 'center');
-            }
 
 
             // snap by the bottom edge
@@ -263,6 +254,28 @@ export function initAligningGuidelines(canvas) {
                 activeObject.setPositionByOrigin(new fabric.Point(objectLeft - objectWidth / 2 - activeObjectWidth / 2, activeObjectTop), 'center', 'center');
             }
 
+            // snap by the top edge
+            if (isInRange(objectTop - objectHeight / 2, activeObjectTop - activeObjectHeight / 2)) {
+                horizontalInTheRange = true;
+                horizontalLines.push({
+                    y: objectTop - objectHeight / 2,
+                    x1: 0,
+                    x2: canvasWidth
+                });
+                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 + activeObjectHeight / 2), 'center', 'center');
+            }
+
+            // snap by the vertical center line
+            if (isInRange(objectTop, activeObjectTop)) {
+                horizontalInTheRange = true;
+                horizontalLines.push({
+                    y: objectTop,
+                    x1: 0,
+                    x2: canvasWidth
+                });
+                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop), 'center', 'center');
+            }
+
             if (isInRange(objectTop + objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
                 horizontalInTheRange = true;
                 horizontalLines.push({
@@ -271,16 +284,6 @@ export function initAligningGuidelines(canvas) {
                     x2: canvasWidth
                 });
                 activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop + objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
-            }
-
-            if (isInRange(objectTop - objectHeight / 2, activeObjectTop + activeObjectHeight / 2)) {
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop - objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(activeObjectLeft, objectTop - objectHeight / 2 - activeObjectHeight / 2), 'center', 'center');
             }
 
             //  snap source by the right edge
