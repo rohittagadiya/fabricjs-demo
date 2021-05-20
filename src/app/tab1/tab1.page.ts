@@ -19,6 +19,8 @@ export class Tab1Page implements OnInit {
   canvasWidth: any;
   canvasHeight: any;
   selected: any;
+  new_width: any = 0;
+  new_height: any = 0;
   canvasConfigOptions: any = {
     hoverCursor: 'pointer',
     selection: true,
@@ -235,5 +237,21 @@ export class Tab1Page implements OnInit {
 
   randomId() {
     return Math.floor(Math.random() * 999999) + 1;
+  }
+
+  addShape() {
+    if (this.new_height > 5 && this.new_width > 5) {
+      let square = new fabric.Rect({
+        top: 30, left: 30, width: this.new_width, height: this.new_height, stroke: 'blue', fill: '#ffffff',
+        strokeWidth: 1,
+        cornerColor: '#3880ff',
+        cornerSize: 10,
+        cornerStyle: 'circle',
+        transparentCorners: false
+      });
+      this.extend(square, this.randomId());
+      this.canvas.add(square);
+      this.canvas.renderAll();
+    }
   }
 }
