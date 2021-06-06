@@ -42,6 +42,17 @@
                 </ion-fab-button>
             </ion-fab>
         </div>
+        <div style="display: flex;">
+            <ion-item>
+                <ion-label position="floating">Main Width</ion-label>
+                <ion-input type="number" [(ngModel)]="mainRectWidth"></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-label position="floating">Main Height</ion-label>
+                <ion-input type="number" [(ngModel)]="mainRectHeight"></ion-input>
+            </ion-item>
+            <ion-button shape="round" fill="outline" (click)="addMainRect()">Add</ion-button>
+        </div>
     </div>
     <!-- <ion-header collapse="condense">
     <ion-toolbar>

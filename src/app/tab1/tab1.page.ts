@@ -21,6 +21,8 @@ export class Tab1Page implements OnInit {
   selected: any;
   new_width: any = 0;
   new_height: any = 0;
+  mainRectHeight: number = 100;
+  mainRectWidth: number = 100;
   canvasConfigOptions: any = {
     hoverCursor: 'pointer',
     selection: true,
@@ -60,6 +62,7 @@ export class Tab1Page implements OnInit {
       'selection:created': (e) => {
 
         this.selected = e.target;
+        console.log('this.selected', this.selected);
       },
       'selection:cleared': (e) => {
         this.selected = null;
@@ -253,5 +256,93 @@ export class Tab1Page implements OnInit {
       this.canvas.add(square);
       this.canvas.renderAll();
     }
+  }
+
+  addMainRect() {
+    if (this.mainRectHeight > 5 && this.mainRectWidth > 5) {
+      this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
+        console.log("result", result);
+        let mainRect = new fabric.Rect({
+          top: 0,
+          left: 0,
+          width: this.mainRectWidth,
+          height: this.mainRectHeight,
+          scaleX: result?.scale < 1 ? result.scale : 1,
+          scaleY: result?.scale < 1 ? result.scale : 1,
+          fill: '#ffffff',
+          strokeWidth: 2,
+          stroke: '#000',
+          cornerColor: '#3880ff',
+          cornerSize: 10,
+          cornerStyle: 'circle',
+          transparentCorners: false,
+          selectable: false,
+          evented: false
+        })
+        this.extend(mainRect, this.randomId());
+        this.canvas.add(mainRect);
+        mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
+        mainRect.setCoords();
+        this.canvas.renderAll();
+        this.canvas.renderAll();
+      })
+      /* let square = new fabric.Rect({
+        top: 30,
+        left: 30,
+        width: this.new_width,
+        height: this.new_height,
+        stroke: 'blue',
+        fill: '#ffffff',
+        strokeWidth: 1,
+        cornerColor: '#3880ff',
+        cornerSize: 10,
+        cornerStyle: 'circle',
+        transparentCorners: false
+      });
+      this.extend(square, this.randomId());
+      this.canvas.add(square);
+      this.canvas.renderAll(); */
+    }
+  }
+
+  async getScaleToFit(object: { width: number, height: number }): Promise<any> {
+    return new Promise(resolve => {
+      let width;
+      let height;
+      const canvasOriginalWidth = object.width;
+      const canvasOriginalHeight = object.height;
+      width = this.canvas.getWidth() * this.canvas.getZoom();
+      height = this.canvas.getHeight() * this.canvas.getZoom();
+      if (this.isPortrait(canvasOriginalWidth, canvasOriginalHeight)) {
+        const scale = height / canvasOriginalHeight;
+        if (width < canvasOriginalWidth * scale) {
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: width / canvasOriginalWidth });
+        }
+        else {
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scale });
+        }
+      }
+      else if (this.isLandscape(canvasOriginalWidth, canvasOriginalHeight)) {
+        const scale = width / canvasOriginalWidth;
+        if (height < canvasOriginalHeight * scale) {
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: height / canvasOriginalHeight });
+        }
+        else {
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scale });
+        }
+      }
+      else {
+        resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: width / canvasOriginalWidth });
+      }
+      // })
+    });
+  }
+
+  isPortrait(width, height) {
+    return height > width + (height / 6);
+  }
+
+  isLandscape(width, height) {
+    return width > height + (width / 6);
   }
 }
