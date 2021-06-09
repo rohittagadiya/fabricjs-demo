@@ -5,6 +5,21 @@ import * as alignededGuides from '../aligning_guidelines.js';
 
 declare const fabric: any;
 
+fabric.Object.prototype._renderStroke = function (ctx) {
+  if (!this.stroke || this.strokeWidth === 0) {
+    return;
+  }
+  if (this.shadow && !this.shadow.affectStroke) {
+    this._removeShadow(ctx);
+  }
+  ctx.save();
+  ctx.scale(1 / this.scaleX, 1 / this.scaleY);
+  this._setLineDash(ctx, this.strokeDashArray, this._renderDashedStroke);
+  this._applyPatternGradientTransform(ctx, this.stroke);
+  ctx.stroke();
+  ctx.restore();
+};
+
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
