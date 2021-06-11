@@ -27,7 +27,7 @@
             <canvas id="imageCanvas" class="canvas-style"></canvas>
         </div>
         <div style="display: flex;">
-            <ion-item>
+            <!-- <ion-item>
                 <ion-label position="floating">Width</ion-label>
                 <ion-input type="number" [(ngModel)]="new_width"></ion-input>
             </ion-item>
@@ -35,14 +35,14 @@
                 <ion-label position="floating">Height</ion-label>
                 <ion-input type="number" [(ngModel)]="new_height"></ion-input>
             </ion-item>
-            <ion-button shape="round" fill="outline" (click)="addShape()">Add</ion-button>
+            <ion-button shape="round" fill="outline" (click)="addShape()">Refresh</ion-button> -->
             <ion-fab (click)="deleteObject()" *ngIf="selected" mode="ios" size="small" vertical="end" horizontal="end">
                 <ion-fab-button>
                     <ion-icon name="trash-outline"></ion-icon>
                 </ion-fab-button>
             </ion-fab>
         </div>
-        <!-- <div style="display: flex;">
+        <div style="display: flex;">
             <ion-item>
                 <ion-label position="floating">Main Width</ion-label>
                 <ion-input type="number" [(ngModel)]="mainRectWidth"></ion-input>
@@ -51,8 +51,8 @@
                 <ion-label position="floating">Main Height</ion-label>
                 <ion-input type="number" [(ngModel)]="mainRectHeight"></ion-input>
             </ion-item>
-            <ion-button shape="round" fill="outline" (click)="addMainRect()">Add</ion-button>
-        </div> -->
+            <ion-button shape="round" fill="outline" (click)="addMainRect()">Refresh</ion-button>
+        </div>
     </div>
     <!-- <ion-header collapse="condense">
     <ion-toolbar>
