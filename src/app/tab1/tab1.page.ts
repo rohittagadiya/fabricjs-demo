@@ -37,6 +37,7 @@ export class Tab1Page implements OnInit {
   new_width: any = 0;
   new_height: any = 0;
   mainRectHeight: number = 100;
+  mainRect: any;
   mainRectWidth: number = 100;
   canvasConfigOptions: any = {
     hoverCursor: 'pointer',
@@ -320,6 +321,51 @@ export class Tab1Page implements OnInit {
     }
   }
 
+  refreshMainRect() {
+    if (!this.mainRect) {
+      if (this.mainRectHeight > 5 && this.mainRectWidth > 5) {
+        this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
+          this.mainRect = new fabric.Rect({
+            top: 0,
+            left: 0,
+            width: this.mainRectWidth,
+            height: this.mainRectHeight,
+            scaleX: result?.scale < 1 ? result.scale : 1,
+            scaleY: result?.scale < 1 ? result.scale : 1,
+            fill: '#ffffff',
+            strokeWidth: 2,
+            stroke: '#000',
+            cornerColor: '#3880ff',
+            cornerSize: 10,
+            cornerStyle: 'circle',
+            transparentCorners: false,
+            selectable: false,
+            evented: false
+          })
+          this.extend(this.mainRect, this.randomId());
+          this.canvas.add(this.mainRect);
+          this.mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
+          this.mainRect.setCoords();
+          this.canvas.renderAll();
+          this.canvas.renderAll();
+        })
+      }
+    }
+    else {
+      this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
+        this.mainRect.set({
+          width: this.mainRectWidth,
+          height: this.mainRectHeight,
+          scaleX: result?.scale < 1 ? result.scale : 1,
+          scaleY: result?.scale < 1 ? result.scale : 1,
+        })
+        this.mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
+        this.mainRect.setCoords();
+        this.canvas.renderAll();
+      });
+    }
+  }
+
   async getScaleToFit(object: { width: number, height: number }): Promise<any> {
     return new Promise(resolve => {
       let width;
@@ -347,7 +393,15 @@ export class Tab1Page implements OnInit {
         }
       }
       else {
-        resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: width / canvasOriginalWidth });
+        const scaleX = width / canvasOriginalWidth;
+        const scaleY = height / canvasOriginalHeight;
+        if (this.isLandscape(width, height))
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleY < 1 ? scaleY : 1 });
+        else if (this.isPortrait(width, height))
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleX < 1 ? scaleX : 1 });
+        else {
+          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleX < 1 ? scaleX : 1 });
+        }
       }
       // })
     });
