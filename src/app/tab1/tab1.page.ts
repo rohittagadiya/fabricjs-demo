@@ -37,8 +37,8 @@ export class Tab1Page implements OnInit {
   new_width: any = 0;
   new_height: any = 0;
   mainRectHeight: number = 100;
-  mainRect: any;
   mainRectWidth: number = 100;
+  mainRect: any;
   canvasConfigOptions: any = {
     hoverCursor: 'pointer',
     selection: true,
@@ -64,19 +64,16 @@ export class Tab1Page implements OnInit {
       _width: this.deviceWidth - 50,
       height: this.deviceHeight - 280,
       _height: this.deviceHeight - 280,
-      // hoverCursor: 'pointer',
       selection: true,
       selectionBorderColor: '#00c3f9',
       selectionColor: 'rgba(0, 195, 249, 0.2)',
       preserveObjectStacking: true,
       originX: 'center',
-      originY: 'center',
-      // fireRightClick: true,
+      originY: 'center'
     });
     alignededGuides.initAligningGuidelines(this.canvas);
     this.canvas.on({
       'selection:created': (e) => {
-
         this.selected = e.target;
         console.log('this.selected', this.selected);
       },
@@ -84,10 +81,9 @@ export class Tab1Page implements OnInit {
         this.selected = null;
       },
       'object:moving': (e) => {
-        let that = this;
-        var obj = e.target;
-
-        var edgedetection = 10;
+        let that = this,
+          obj = e.target,
+          edgedetection = 10;
         obj.setCoords(); //Sets corner position coordinates based on current angle, width and height
         that.canvas.forEachObject(function (targ) {
           let activeObject = that.canvas.getActiveObject();
@@ -95,10 +91,7 @@ export class Tab1Page implements OnInit {
           let activeObject_currentHeight = activeObject.height * activeObject.scaleY;
           let target_currentWidth = targ.width * targ.scaleX;
           let target_currentHeight = targ.height * targ.scaleY;
-
           if (targ === activeObject) return;
-
-
           if (Math.abs(activeObject.oCoords.tr.x - targ.oCoords.tl.x) < edgedetection) {
             activeObject.left = targ.left - activeObject_currentWidth;
           }
@@ -111,66 +104,12 @@ export class Tab1Page implements OnInit {
           if (Math.abs(targ.oCoords.br.y - activeObject.oCoords.tr.y) < edgedetection) {
             activeObject.top = targ.top + target_currentHeight;
           }
-          // if (activeObject.intersectsWithObject(targ) && targ.intersectsWithObject(activeObject)) {
-          //   targ.strokeWidth = 10;
-          //   targ.stroke = 'red';
-          // } else {
-          //   targ.strokeWidth = 0;
-          //   targ.stroke = false;
-          // }
-          // if (!activeObject.intersectsWithObject(targ)) {
-          //   activeObject.strokeWidth = 0;
-          //   activeObject.stroke = false;
-          // }
         });
-
-        /* var hSnapZone = 15;
-        var hObjectMiddle = e.target.left + (obj.width * obj.scaleX) / 2;
-        if (hObjectMiddle > obj.canvas.width / 2 - hSnapZone &&
-          hObjectMiddle < obj.canvas.width / 2 + hSnapZone) {
-          e.target.set({
-            left: obj.canvas.width / 2 - (obj.width * obj.scaleX) / 2,
-          }).setCoords();
-        }
-        var vSnapZone = 15;
-        var vObjectMiddle = e.target.top + (obj.height * obj.scaleY) / 2;
-        if (vObjectMiddle > obj.canvas.height / 2 - vSnapZone &&
-          vObjectMiddle < obj.canvas.height / 2 + vSnapZone) {
-          e.target.set({
-            top: obj.canvas.height / 2 - (obj.height * obj.scaleY) / 2,
-          }).setCoords();
-        } */
-
-        // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
-        /* if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
-          this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 10);
-        }
-        if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
-          this.canvas.setWidth(obj.left + (obj.width * obj.scaleX) + 10);
-        }
-
-        if (obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width) {
-          return;
-        }
-        obj.setCoords();
-
-        if (obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0) {
-          obj.top = Math.max(obj.top, obj.top - obj.getBoundingRect().top);
-          obj.left = Math.max(obj.left, obj.left - obj.getBoundingRect().left);
-        } */
       },
       'object:scaling': (e) => {
-        var obj = e.target;
-        // console.log(obj, obj.height * obj.scaleY, obj.canvas.height)
-        /* if (obj.top + (obj.height * obj.scaleY) > obj.canvas.height) {
-          this.canvas.setHeight(obj.top + (obj.height * obj.scaleY) + 20);
-        }
-        if (obj.left + (obj.width * obj.scaleX) > obj.canvas.width) {
-          this.canvas.setWidth(obj.left + (obj.width * obj.scaleX) + 20);
-        } */
+
       }
     });
-    this.draw('square');
   }
 
   draw(value) {
@@ -259,72 +198,53 @@ export class Tab1Page implements OnInit {
   }
 
   addShape() {
-    if (this.new_height > 5 && this.new_width > 5) {
-      let square = new fabric.Rect({
-        top: 30, left: 30, width: this.new_width, height: this.new_height, stroke: 'blue', fill: '#ffffff',
-        strokeWidth: 1,
-        cornerColor: '#3880ff',
-        cornerSize: 10,
-        cornerStyle: 'circle',
-        transparentCorners: false
-      });
-      this.extend(square, this.randomId());
-      this.canvas.add(square);
-      this.canvas.renderAll();
-    }
-  }
+    let targetObject = {
+      width: this.mainRect?.width * this.mainRect?.scaleX || this.canvas.getWidth() * this.canvas.getZoom(),
+      height: this.mainRect?.height * this.mainRect?.scaleY || this.canvas.getHeight() * this.canvas.getZoom()
+    };
+    let sourceObject = {
+      width: this.new_width,
+      height: this.new_height
+    };
 
-  addMainRect() {
-    if (this.mainRectHeight > 5 && this.mainRectWidth > 5) {
-      this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
-        console.log("result", result);
-        let mainRect = new fabric.Rect({
-          top: 0,
-          left: 0,
-          width: this.mainRectWidth,
-          height: this.mainRectHeight,
-          scaleX: result?.scale < 1 ? result.scale : 1,
-          scaleY: result?.scale < 1 ? result.scale : 1,
-          fill: '#ffffff',
-          strokeWidth: 2,
-          stroke: '#000',
-          cornerColor: '#3880ff',
-          cornerSize: 10,
-          cornerStyle: 'circle',
-          transparentCorners: false,
-          selectable: false,
-          evented: false
-        })
-        this.extend(mainRect, this.randomId());
-        this.canvas.add(mainRect);
-        mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
-        mainRect.setCoords();
-        this.canvas.renderAll();
-        this.canvas.renderAll();
+    if (this.new_height > 5 && this.new_width > 5) {
+      this.getScaleToFit(sourceObject, targetObject).then(result => {
+        if (result && result.scale) {
+          let square = new fabric.Rect({
+            top: this.mainRect?.top || 0,
+            left: this.mainRect?.left || 0,
+            width: this.new_width,
+            height: this.new_height,
+            scaleX: result?.scale < 1 ? result?.scale : 1,
+            scaleY: result?.scale < 1 ? result?.scale : 1,
+            stroke: 'blue',
+            fill: '#ffffff',
+            strokeWidth: 1,
+            cornerColor: '#3880ff',
+            cornerSize: 10,
+            cornerStyle: 'circle',
+            transparentCorners: false
+          });
+          this.extend(square, this.randomId());
+          this.canvas.add(square);
+          this.canvas.renderAll();
+        }
       })
-      /* let square = new fabric.Rect({
-        top: 30,
-        left: 30,
-        width: this.new_width,
-        height: this.new_height,
-        stroke: 'blue',
-        fill: '#ffffff',
-        strokeWidth: 1,
-        cornerColor: '#3880ff',
-        cornerSize: 10,
-        cornerStyle: 'circle',
-        transparentCorners: false
-      });
-      this.extend(square, this.randomId());
-      this.canvas.add(square);
-      this.canvas.renderAll(); */
     }
   }
 
   refreshMainRect() {
+    let targetObject = {
+      width: this.canvas.getWidth() * this.canvas.getZoom(),
+      height: this.canvas.getHeight() * this.canvas.getZoom()
+    };
+    let sourceObject = {
+      width: this.mainRectWidth,
+      height: this.mainRectHeight
+    };
     if (!this.mainRect) {
       if (this.mainRectHeight > 5 && this.mainRectWidth > 5) {
-        this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
+        this.getScaleToFit(sourceObject, targetObject).then(result => {
           this.mainRect = new fabric.Rect({
             top: 0,
             left: 0,
@@ -346,13 +266,15 @@ export class Tab1Page implements OnInit {
           this.canvas.add(this.mainRect);
           this.mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
           this.mainRect.setCoords();
+          this.canvas.sendToBack(this.mainRect)
           this.canvas.renderAll();
           this.canvas.renderAll();
+          this.refreshAllObjectScale()
         })
       }
     }
     else {
-      this.getScaleToFit({ width: this.mainRectWidth, height: this.mainRectHeight }).then(result => {
+      this.getScaleToFit(sourceObject, targetObject).then(result => {
         this.mainRect.set({
           width: this.mainRectWidth,
           height: this.mainRectHeight,
@@ -361,49 +283,73 @@ export class Tab1Page implements OnInit {
         })
         this.mainRect.setPositionByOrigin({ x: this.canvas._width / 2, y: this.canvas._height / 2 }, 'center', 'center');
         this.mainRect.setCoords();
+        this.canvas.sendToBack(this.mainRect);
         this.canvas.renderAll();
+        this.refreshAllObjectScale()
       });
     }
   }
 
-  async getScaleToFit(object: { width: number, height: number }): Promise<any> {
+  refreshAllObjectScale() {
+    let targetObject = {
+      width: this.mainRect?.width * this.mainRect?.scaleX || this.canvas.getWidth() * this.canvas.getZoom(),
+      height: this.mainRect?.height * this.mainRect?.scaleY || this.canvas.getHeight() * this.canvas.getZoom()
+    };
+    this.canvas.forEachObject(element => {
+      if (element.toJSON().id !== this.mainRect.toJSON().id) {
+        let sourceObject = {
+          width: element.width,
+          height: element.height,
+        }
+        this.getScaleToFit(sourceObject, targetObject).then(result => {
+          if (result && result.scale) {
+            element.set({
+              scaleX: result?.scale,
+              scaleY: result?.scale
+            })
+            element.setCoords();
+            this.canvas.renderAll();
+          }
+        })
+      }
+    })
+  }
+
+  async getScaleToFit(sourceObject: { width: number, height: number }, targetObject: { width: number, height: number }): Promise<any> {
     return new Promise(resolve => {
-      let width;
-      let height;
-      const canvasOriginalWidth = object.width;
-      const canvasOriginalHeight = object.height;
-      width = this.canvas.getWidth() * this.canvas.getZoom();
-      height = this.canvas.getHeight() * this.canvas.getZoom();
-      if (this.isPortrait(canvasOriginalWidth, canvasOriginalHeight)) {
-        const scale = height / canvasOriginalHeight;
-        if (width < canvasOriginalWidth * scale) {
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: width / canvasOriginalWidth });
+      let targetWidth = targetObject.width;
+      let targetHeight = targetObject.height;
+      const sourceWidth = sourceObject.width;
+      const sourceHeight = sourceObject.height;
+      if (this.isPortrait(sourceWidth, sourceHeight)) {
+        const scale = targetHeight / sourceHeight;
+        if (targetWidth < sourceWidth * scale) {
+          resolve({ width: sourceWidth, height: sourceHeight, scale: targetWidth / sourceWidth });
         }
         else {
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scale });
+          resolve({ width: sourceWidth, height: sourceHeight, scale: scale });
         }
       }
-      else if (this.isLandscape(canvasOriginalWidth, canvasOriginalHeight)) {
-        const scale = width / canvasOriginalWidth;
-        if (height < canvasOriginalHeight * scale) {
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: height / canvasOriginalHeight });
+      else if (this.isLandscape(sourceWidth, sourceHeight)) {
+        const scale = targetWidth / sourceWidth;
+        if (targetHeight < sourceHeight * scale) {
+          resolve({ width: sourceWidth, height: sourceHeight, scale: targetHeight / sourceHeight });
         }
         else {
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scale });
+          resolve({ width: sourceWidth, height: sourceHeight, scale: scale });
         }
       }
       else {
-        const scaleX = width / canvasOriginalWidth;
-        const scaleY = height / canvasOriginalHeight;
-        if (this.isLandscape(width, height))
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleY < 1 ? scaleY : 1 });
-        else if (this.isPortrait(width, height))
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleX < 1 ? scaleX : 1 });
+        const scaleX = targetWidth / sourceWidth;
+        const scaleY = targetHeight / sourceHeight;
+        if (this.isLandscape(targetWidth, targetHeight))
+          resolve({ width: sourceWidth, height: sourceHeight, scale: scaleY < 1 ? scaleY : 1 });
+        else if (this.isPortrait(targetWidth, targetHeight))
+          resolve({ width: sourceWidth, height: sourceHeight, scale: scaleX < 1 ? scaleX : 1 });
         else {
-          resolve({ width: canvasOriginalWidth, height: canvasOriginalHeight, scale: scaleX < 1 ? scaleX : 1 });
+          resolve({ width: sourceWidth, height: sourceHeight, scale: scaleX < 1 ? scaleX : 1 });
         }
       }
-      // })
     });
   }
 
