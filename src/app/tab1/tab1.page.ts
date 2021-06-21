@@ -291,6 +291,19 @@ export class Tab1Page implements OnInit {
   }
 
   refreshAllObjectScale() {
+    this.canvas.forEachObject(element => {
+      if (element.toJSON().id !== this.mainRect.toJSON().id) {
+        element.set({
+          scaleX: this.mainRect?.scaleX,
+          scaleY: this.mainRect?.scaleY
+        })
+        element.setCoords();
+        this.canvas.renderAll();
+      }
+    })
+  }
+
+  /* refreshAllObjectScale() {
     let targetObject = {
       width: this.mainRect?.width * this.mainRect?.scaleX || this.canvas.getWidth() * this.canvas.getZoom(),
       height: this.mainRect?.height * this.mainRect?.scaleY || this.canvas.getHeight() * this.canvas.getZoom()
@@ -313,7 +326,7 @@ export class Tab1Page implements OnInit {
         })
       }
     })
-  }
+  } */
 
   async getScaleToFit(sourceObject: { width: number, height: number }, targetObject: { width: number, height: number }): Promise<any> {
     return new Promise(resolve => {

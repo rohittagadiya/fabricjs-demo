@@ -1,8 +1,7 @@
 export function initAligningGuidelines(canvas) {
 
     var ctx = canvas.getSelectionContext(),
-        aligningLineOffset = 5,
-        aligningLineMargin = 3,
+        aligningLineMargin = 10,
         aligningLineWidth = 2,
         aligningLineColor = '#6aacff',
         viewportTransform,
@@ -108,6 +107,10 @@ export function initAligningGuidelines(canvas) {
         } else return {};
     }
 
+    function setRoundedPosition(activeObject, left, top) {
+        activeObject.setPositionByOrigin(new fabric.Point(Math.round(left), Math.round(top)), 'center', 'center');
+    }
+
     var verticalLines = [],
         horizontalLines = [];
 
@@ -138,252 +141,242 @@ export function initAligningGuidelines(canvas) {
 
         if (!transform) return;
 
-        for (var i = canvasObjects.length; i--;) {
-            if (activeObject.hasOwnProperty('_objects') && activeObject._objects.indexOf(canvasObjects[i]) != -1) {
-                // this is for group
-                continue;
-            }
-            if (canvasObjects[i] === activeObject) continue;
+        canvas.forEachObject((object, i) => {
+                if (activeObject.hasOwnProperty('_objects') && activeObject._objects.indexOf(object) != -1) {
+                    // this is for group
+                    return;
+                }
+                if (object === activeObject) return;
 
-            var objectCenter = canvasObjects[i].getCenterPoint(),
-                objectLeft = objectCenter.x,
-                objectTop = objectCenter.y,
-                objectBoundingRect = canvasObjects[i].getBoundingRect(),
-                objectHeight = objectBoundingRect.height / viewportTransform[3],
-                objectWidth = objectBoundingRect.width / viewportTransform[0];
+                var objectCenter = object.getCenterPoint(),
+                    objectLeft = objectCenter.x,
+                    objectTop = objectCenter.y,
+                    objectBoundingRect = object.getBoundingRect(),
+                    objectHeight = objectBoundingRect.height / viewportTransform[3],
+                    objectWidth = objectBoundingRect.width / viewportTransform[0];
 
-            // active : top | other : bottom
-            if (isInRange(objectTop + objectHeight / 2, positions.activeObjectTop - positions.activeObjectHeight / 2)) {
-                console.log("other : bottom | active : top");
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop + objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(positions.activeObjectLeft, objectTop + objectHeight / 2 + positions.activeObjectHeight / 2), 'center', 'center');
-                reAssignPosition(activeObject).then(result => {
-                    positions = result
-                });
-            }
+                // active : top | other : bottom
+                if (isInRange(objectTop + objectHeight / 2, positions.activeObjectTop - positions.activeObjectHeight / 2)) {
+                    horizontalInTheRange = true;
+                    horizontalLines.push({
+                        y: objectTop + objectHeight / 2,
+                        x1: 0,
+                        x2: canvasWidth
+                    });
+                    setRoundedPosition(activeObject, positions.activeObjectLeft, objectTop + objectHeight / 2 + positions.activeObjectHeight / 2);
+                    reAssignPosition(activeObject).then(result => {
+                        positions = result
+                    });
+                }
 
-            // active : top | other : top
-            if (isInRange(objectTop - objectHeight / 2, positions.activeObjectTop - positions.activeObjectHeight / 2)) {
-                console.log("other : top | active : top");
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop - objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(positions.activeObjectLeft, objectTop - objectHeight / 2 + positions.activeObjectHeight / 2), 'center', 'center');
-                reAssignPosition(activeObject).then(result => {
-                    positions = result
-                });
-            }
+                // active : top | other : top
+                if (isInRange(objectTop - objectHeight / 2, positions.activeObjectTop - positions.activeObjectHeight / 2)) {
+                    horizontalInTheRange = true;
+                    horizontalLines.push({
+                        y: objectTop - objectHeight / 2,
+                        x1: 0,
+                        x2: canvasWidth
+                    });
+                    setRoundedPosition(activeObject, positions.activeObjectLeft, objectTop - objectHeight / 2 + positions.activeObjectHeight / 2);
+                    reAssignPosition(activeObject).then(result => {
+                        positions = result
+                    });
+                }
 
-            // active : bottom | other : bottom
-            if (isInRange(objectTop + objectHeight / 2, positions.activeObjectTop + positions.activeObjectHeight / 2)) {
-                console.log("other : bottom | active : bottom");
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop + objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(positions.activeObjectLeft, objectTop + objectHeight / 2 - positions.activeObjectHeight / 2), 'center', 'center');
-                reAssignPosition(activeObject).then(result => {
-                    positions = result
-                });
-            }
+                // active : bottom | other : bottom
+                if (isInRange(objectTop + objectHeight / 2, positions.activeObjectTop + positions.activeObjectHeight / 2)) {
+                    horizontalInTheRange = true;
+                    horizontalLines.push({
+                        y: objectTop + objectHeight / 2,
+                        x1: 0,
+                        x2: canvasWidth
+                    });
+                    setRoundedPosition(activeObject, positions.activeObjectLeft, objectTop + objectHeight / 2 - positions.activeObjectHeight / 2);
+                    reAssignPosition(activeObject).then(result => {
+                        positions = result
+                    });
+                }
 
-            // active : bottom | other : top
-            if (isInRange(objectTop - objectHeight / 2, positions.activeObjectTop + positions.activeObjectHeight / 2)) {
-                console.log("other : top | active : bottom");
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop - objectHeight / 2,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(positions.activeObjectLeft, objectTop - objectHeight / 2 - positions.activeObjectHeight / 2), 'center', 'center');
-                reAssignPosition(activeObject).then(result => {
-                    positions = result
-                });
-            }
+                // active : bottom | other : top
+                if (isInRange(objectTop - objectHeight / 2, positions.activeObjectTop + positions.activeObjectHeight / 2)) {
+                    horizontalInTheRange = true;
+                    horizontalLines.push({
+                        y: objectTop - objectHeight / 2,
+                        x1: 0,
+                        x2: canvasWidth
+                    });
+                    setRoundedPosition(activeObject, positions.activeObjectLeft, objectTop - objectHeight / 2 - positions.activeObjectHeight / 2);
+                    reAssignPosition(activeObject).then(result => {
+                        positions = result
+                    });
+                }
 
-            // active : left | other : right
-            if (isInRange(objectLeft + objectWidth / 2, positions.activeObjectLeft - positions.activeObjectWidth / 2)) {
-                console.log('active : left | other : right: ');
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft + objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                var top = positions.activeObjectTop;
-                activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                    snappable && snappable.top ? top = snappable.top : null;
-                    activeCenterOtherCenterV(objectTop, positions).then(snappable => {
+                // active : left | other : right
+                if (isInRange(objectLeft + objectWidth / 2, positions.activeObjectLeft - positions.activeObjectWidth / 2)) {
+                    verticalInTheRange = true;
+                    verticalLines.push({
+                        x: objectLeft + objectWidth / 2,
+                        y1: 0,
+                        y2: canvasHeight
+                    });
+                    var top = positions.activeObjectTop;
+                    activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                         snappable && snappable.top ? top = snappable.top : null;
-                        activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                        activeCenterOtherCenterV(objectTop, positions).then(snappable => {
                             snappable && snappable.top ? top = snappable.top : null;
-                            activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                            activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
                                 snappable && snappable.top ? top = snappable.top : null;
-                                activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                                     snappable && snappable.top ? top = snappable.top : null;
-                                    activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 + positions.activeObjectWidth / 2, top || positions.activeObjectTop), 'center', 'center');
-                                    reAssignPosition(activeObject).then(result => {
-                                        positions = result
+                                    activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                        snappable && snappable.top ? top = snappable.top : null;
+                                        setRoundedPosition(activeObject, objectLeft + objectWidth / 2 + positions.activeObjectWidth / 2, top || positions.activeObjectTop);
+                                        reAssignPosition(activeObject).then(result => {
+                                            positions = result
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    })
+                }
+
+                // active : left | other : left
+                if (isInRange(objectLeft - objectWidth / 2, positions.activeObjectLeft - positions.activeObjectWidth / 2)) {
+                    verticalInTheRange = true;
+                    verticalLines.push({
+                        x: objectLeft - objectWidth / 2,
+                        y1: 0,
+                        y2: canvasHeight
+                    });
+                    var top = positions.activeObjectTop;
+                    activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                        snappable && snappable.top ? top = snappable.top : null;
+                        activeCenterOtherCenterV(objectTop, positions).then(snappable => {
+                            snappable && snappable.top ? top = snappable.top : null;
+                            activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                snappable && snappable.top ? top = snappable.top : null;
+                                activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                                    snappable && snappable.top ? top = snappable.top : null;
+                                    activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                        snappable && snappable.top ? top = snappable.top : null;
+                                        setRoundedPosition(activeObject, objectLeft - objectWidth / 2 + positions.activeObjectWidth / 2, top);
+                                        reAssignPosition(activeObject).then(result => {
+                                            positions = result
+                                        });
+                                    })
+                                })
+                            })
+                        })
+                    })
+                }
+
+                // active : right | other : right
+                if (isInRange(objectLeft + objectWidth / 2, positions.activeObjectLeft + positions.activeObjectWidth / 2)) {
+                    verticalInTheRange = true;
+                    verticalLines.push({
+                        x: objectLeft + objectWidth / 2,
+                        y1: 0,
+                        y2: canvasHeight
+                    });
+                    var top = positions.activeObjectTop;
+                    activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                        snappable && snappable.top ? top = snappable.top : null;
+                        activeCenterOtherCenterV(objectTop, positions).then(snappable => {
+                            snappable && snappable.top ? top = snappable.top : null;
+                            activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                snappable && snappable.top ? top = snappable.top : null;
+                                activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                                    snappable && snappable.top ? top = snappable.top : null;
+                                    activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                        snappable && snappable.top ? top = snappable.top : null;
+                                        setRoundedPosition(activeObject, objectLeft + objectWidth / 2 - positions.activeObjectWidth / 2, top);
+                                        reAssignPosition(activeObject).then(result => {
+                                            positions = result
+                                        });
                                     });
                                 });
                             });
                         });
                     });
-                })
-            }
+                }
 
-            // active : left | other : left
-            if (isInRange(objectLeft - objectWidth / 2, positions.activeObjectLeft - positions.activeObjectWidth / 2)) {
-                console.log("other : left | active : left");
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft - objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                var top = positions.activeObjectTop;
-                activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                    snappable && snappable.top ? top = snappable.top : null;
-                    activeCenterOtherCenterV(objectTop, positions).then(snappable => {
-                        snappable && snappable.top ? top = snappable.top : null;
-                        activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
-                            snappable && snappable.top ? top = snappable.top : null;
-                            activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                                snappable && snappable.top ? top = snappable.top : null;
-                                activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
-                                    snappable && snappable.top ? top = snappable.top : null;
-                                    activeObject.setPositionByOrigin(new fabric.Point(objectLeft - objectWidth / 2 + positions.activeObjectWidth / 2, top), 'center', 'center');
-                                    reAssignPosition(activeObject).then(result => {
-                                        positions = result
-                                    });
-                                })
-                            })
-                        })
-                    })
-                })
-            }
-
-            // active : right | other : right
-            if (isInRange(objectLeft + objectWidth / 2, positions.activeObjectLeft + positions.activeObjectWidth / 2)) {
-                console.log("other : right | active : right");
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft + objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                var top = positions.activeObjectTop;
-                activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                    snappable && snappable.top ? top = snappable.top : null;
-                    activeCenterOtherCenterV(objectTop, positions).then(snappable => {
-                        snappable && snappable.top ? top = snappable.top : null;
-                        activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
-                            snappable && snappable.top ? top = snappable.top : null;
-                            activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                                snappable && snappable.top ? top = snappable.top : null;
-                                activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
-                                    snappable && snappable.top ? top = snappable.top : null;
-                                    activeObject.setPositionByOrigin(new fabric.Point(objectLeft + objectWidth / 2 - positions.activeObjectWidth / 2, top), 'center', 'center');
-                                    reAssignPosition(activeObject).then(result => {
-                                        positions = result
-                                    });
-                                });
-                            });
-                        });
+                // active : right | other : left
+                if (isInRange(objectLeft - objectWidth / 2, positions.activeObjectLeft + positions.activeObjectWidth / 2)) {
+                    verticalInTheRange = true;
+                    verticalLines.push({
+                        x: objectLeft - objectWidth / 2,
+                        y1: 0,
+                        y2: canvasHeight
                     });
-                });
-            }
-
-            // active : right | other : left
-            if (isInRange(objectLeft - objectWidth / 2, positions.activeObjectLeft + positions.activeObjectWidth / 2)) {
-                console.log("other : left | active : right", objectLeft, objectWidth / 2, positions.activeObjectWidth / 2);
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft - objectWidth / 2,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                var top = positions.activeObjectTop;
-                activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                    snappable && snappable.top ? top = snappable.top : null;
-                    activeCenterOtherCenterV(objectTop, positions).then(snappable => {
+                    var top = positions.activeObjectTop;
+                    activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                         snappable && snappable.top ? top = snappable.top : null;
-                        activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                        activeCenterOtherCenterV(objectTop, positions).then(snappable => {
                             snappable && snappable.top ? top = snappable.top : null;
-                            activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                            activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
                                 snappable && snappable.top ? top = snappable.top : null;
-                                activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                                     snappable && snappable.top ? top = snappable.top : null;
-                                    console.log('objectLeft - objectWidth / 2 - positions.activeObjectWidth / 2: ', objectLeft - objectWidth / 2 - positions.activeObjectWidth / 2);
-                                    activeObject.setPositionByOrigin(new fabric.Point(objectLeft - objectWidth / 2 - positions.activeObjectWidth / 2, top || positions.activeObjectTop), 'center', 'center');
-                                    reAssignPosition(activeObject).then(result => {
-                                        positions = result
-                                    });
+                                    activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                        snappable && snappable.top ? top = snappable.top : null;
+                                        setRoundedPosition(activeObject, objectLeft - objectWidth / 2 - positions.activeObjectWidth / 2, top || positions.activeObjectTop);
+                                        reAssignPosition(activeObject).then(result => {
+                                            positions = result
+                                        });
+                                    })
                                 })
                             })
                         })
                     })
-                })
-            }
+                }
 
-            // CENTER SNAPPING
-            // snap in center when move vertically
-            if (isInRange(objectTop, positions.activeObjectTop)) {
-                console.log("other : top center | active : top center");
-                horizontalInTheRange = true;
-                horizontalLines.push({
-                    y: objectTop,
-                    x1: 0,
-                    x2: canvasWidth
-                });
-                activeObject.setPositionByOrigin(new fabric.Point(positions.activeObjectLeft, objectTop), 'center', 'center');
-                reAssignPosition(activeObject).then(result => {
-                    positions = result
-                });
-            }
+                // CENTER SNAPPING
+                // snap in center when move vertically
+                if (isInRange(objectTop, positions.activeObjectTop)) {
+                    horizontalInTheRange = true;
+                    horizontalLines.push({
+                        y: objectTop,
+                        x1: 0,
+                        x2: canvasWidth
+                    });
+                    setRoundedPosition(activeObject, positions.activeObjectLeft, objectTop);
+                    reAssignPosition(activeObject).then(result => {
+                        positions = result
+                    });
+                }
 
-            // center snap when move horizontally
-            if (isInRange(objectLeft, positions.activeObjectLeft)) {
-                console.log("other : left center | active : left center");
-                verticalInTheRange = true;
-                verticalLines.push({
-                    x: objectLeft,
-                    y1: 0,
-                    y2: canvasHeight
-                });
-                var top = positions.activeObjectTop
-                activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
-                    snappable && snappable.top ? top = snappable.top : null;
-                    activeCenterOtherCenterV(objectTop, positions).then(snappable => {
+                // center snap when move horizontally
+                if (isInRange(objectLeft, positions.activeObjectLeft)) {
+                    verticalInTheRange = true;
+                    verticalLines.push({
+                        x: objectLeft,
+                        y1: 0,
+                        y2: canvasHeight
+                    });
+                    var top = positions.activeObjectTop
+                    activeTopOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                         snappable && snappable.top ? top = snappable.top : null;
-                        activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                        activeCenterOtherCenterV(objectTop, positions).then(snappable => {
                             snappable && snappable.top ? top = snappable.top : null;
-                            activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
+                            activeTopOtherTop(objectTop, objectHeight, positions).then(snappable => {
                                 snappable && snappable.top ? top = snappable.top : null;
-                                activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                activeBottomOtherBottom(objectTop, objectHeight, positions).then(snappable => {
                                     snappable && snappable.top ? top = snappable.top : null;
-                                    activeObject.setPositionByOrigin(new fabric.Point(objectLeft, top), 'center', 'center');
-                                    reAssignPosition(activeObject).then(result => {
-                                        positions = result
-                                    });
-                                })
-                            });
+                                    activeBottomOtherTop(objectTop, objectHeight, positions).then(snappable => {
+                                        snappable && snappable.top ? top = snappable.top : null;
+                                        setRoundedPosition(activeObject, objectLeft, top);
+                                        reAssignPosition(activeObject).then(result => {
+                                            positions = result
+                                        });
+                                    })
+                                });
+                            })
                         })
                     })
-                })
-            }
-        }
+                }
+            })
+            // }
 
         if (!horizontalInTheRange) {
             horizontalLines.length = 0;
